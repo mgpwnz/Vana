@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.5"
+VERSION="1.0.6"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -60,12 +60,19 @@ while true; do
             source ~/.bashrc
             poetry --version || { echo "Poetry installation failed"; exit 1; }
 
-            # Node.js + npm
-            curl -fsSL https://fnm.vercel.app/install | bash
-            export PATH="/root/.local/share/fnm:$PATH"
-            eval "$(fnm env)"
+            # Install Node.js using nvm
+            if ! command -v nvm &> /dev/null; then
+                echo "Installing nvm..."
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            fi
 
-            fnm use --install-if-missing 22
+            # Install the latest version of Node.js
+            nvm install node
+            nvm use node
+
+            # Verify installation
             node -v || { echo "Node.js installation failed"; exit 1; }
             npm -v || { echo "npm installation failed"; exit 1; }
 

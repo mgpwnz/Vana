@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.8"
+VERSION="1.0.9"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -37,7 +37,7 @@ function confirm_input {
 while true; do
   # Menu
   PS3='Select an action: '
-  options=("Pre Install" "Install Node" "Deploy" "Verifi" "Pre Validator" "Stake Validator" "Logs" "Uninstall" "Exit")
+  options=("Pre Install" "Install Node" "Deploy" "Pre Validator" "Stake Validator" "Logs" "Uninstall" "Exit")
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")

@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.15"
+VERSION="1.0.16"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -41,10 +41,10 @@ while true; do
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
-        # Pre Install
+       # Pre Install
         sudo apt update && sudo apt upgrade -y
         sudo apt-get install git -y
-        git --version || { echo "git installation failed"; exit 1; }
+        git --version || { echo "Git installation failed"; exit 1; }
 
         # Python
         sudo apt install software-properties-common -y
@@ -54,16 +54,22 @@ while true; do
         python3.11 --version || { echo "Python installation failed"; exit 1; }
 
         # Poetry
-        curl -sSL https://install.python-poetry.org | python3 -
-        if [ $? -ne 0 ]; then
-            echo "Poetry installation via curl failed. Trying pip..."
-            pip install poetry
+        if ! command -v poetry &> /dev/null; then
+            curl -sSL https://install.python-poetry.org | python3 -
+            if [ $? -ne 0 ]; then
+                echo "Poetry installation via curl failed. Trying pip..."
+                pip install --user poetry
+            fi
+        else
+            echo "Poetry is already installed."
         fi
 
         # Додати Poetry до PATH
         echo "export PATH=\"$HOME/.local/bin:\$PATH\"" >> ~/.bashrc
         source ~/.bashrc
         hash -r
+
+        # Перевірка версії Poetry
         poetry --version || { echo "Poetry installation failed"; exit 1; }
 
         # Install Node.js using nvm
@@ -86,6 +92,7 @@ while true; do
         yarn --version || { echo "Yarn installation failed"; exit 1; }
 
         echo "DONE"
+
 
         break
         ;;

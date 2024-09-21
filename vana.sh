@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.1"
+VERSION="1.0.2"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -32,24 +32,7 @@ function confirm_input {
   return 0 
 }
 
-# Функція для відображення прогресу
-show_progress() {
-    local -r duration=${1}
-    local -r delay=1  # Змінив на цілочисельне значення
-    local -r total=$((${duration} / ${delay}))
-    for ((i=0; i<=total; i++)); do
-        sleep ${delay}
-        printf "\rProgress: ["
-        for ((j=0; j<i*100/total; j+=2)); do
-            printf "="
-        done
-        for ((j=i*100/total; j<100; j+=2)); do
-            printf " "
-        done
-        printf "] %d%%" $((i*100/total))
-    done
-    printf "\n"
-}
+
 
 while true; do
   # Menu
@@ -91,9 +74,6 @@ while true; do
             npm install -g yarn
             yarn --version || { echo "Yarn installation failed"; exit 1; }
         } &> /dev/null &
-
-        show_progress 90
-        wait
 
         break
         ;;

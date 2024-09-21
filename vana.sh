@@ -166,11 +166,11 @@ while true; do
         # Цикл для збору та підтвердження інформації
         while true; do
         DPK="" OA="" DN="" DTN="" DTS=""
-        check_empty DPK "DEPLOYER_PRIVATE_KEY: "
-        check_empty OA "OWNER_ADDRESS: "
-        check_empty DN "DLP_NAME: "
-        check_empty DTN "DLP_TOKEN_NAME: "
-        check_empty DTS "DLP_TOKEN_SYMBOL: "
+        check_empty DPK "Coldkey_PRIVATE_KEY: "
+        check_empty OA "Coldkey_ADDRESS: "
+        check_empty DN "Data Liquidity Pool NAME: "
+        check_empty DTN "Data Liquidity Pool TOKEN NAME: "
+        check_empty DTS "Data Liquidity Pool TOKEN SYMBOL: "
         confirm_input DPK OA DN DTN DTS
         if [ $? -eq 0 ]; then break; fi
         done
@@ -195,8 +195,8 @@ while true; do
         while true; do
           OAK="" DLP="" DLPT=""
           check_empty OAK "OPENAI_API_KEY: "
-          check_empty DLP "DLP_SATORI_CONTRACT: "
-          check_empty DLPT "DLP_TOKEN_SATORI_CONTRACT: "
+          check_empty DLP "Data Liquidity Pool CONTRACT: "
+          check_empty DLPT "Data Liquidity Pool TOKEN CONTRACT: "
           confirm_input OAK DLP DLPT
           if [ $? -eq 0 ]; then break; fi
         done

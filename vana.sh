@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.3"
+VERSION="1.0.4"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -42,7 +42,6 @@ while true; do
     case $opt in
       "Pre Install")
         # Pre Install
-        {
             sudo apt update && sudo apt upgrade -y
             sudo apt-get install git -y
             git --version || { echo "git installation failed"; exit 1; }
@@ -73,7 +72,6 @@ while true; do
             # Install yarn globally
             npm install -g yarn
             yarn --version || { echo "Yarn installation failed"; exit 1; }
-        } &> /dev/null &
 
         break
         ;;

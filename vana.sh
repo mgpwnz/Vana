@@ -76,9 +76,6 @@ while true; do
         node -v || { echo "Node.js installation failed"; exit 1; }
         npm -v || { echo "npm installation failed"; exit 1; }
 
-        # Install npm via apt (optional)
-        sudo apt install npm -y
-
         # Install yarn globally
         npm install -g yarn
         yarn --version || { echo "Yarn installation failed"; exit 1; }

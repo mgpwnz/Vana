@@ -47,7 +47,7 @@ while true; do
         sudo add-apt-repository ppa:deadsnakes/ppa -y
         sudo apt update
         sudo apt install python3.11 -y
-        python3.11 --version
+        python3.11 --version || { echo "Python installation failed"; exit 1; }
 
         # Poetry
         sudo apt install python3-pip python3-venv curl -y
@@ -58,13 +58,17 @@ while true; do
 
         # Node.js + npm
         curl -fsSL https://fnm.vercel.app/install | bash
-        source ~/.bashrc
+        export PATH="/root/.local/share/fnm:$PATH"
+        eval "$(fnm env)"
+
         fnm use --install-if-missing 22
-        node -v && npm -v || { echo "Node.js or npm installation failed"; exit 1; }
+        node -v || { echo "Node.js installation failed"; exit 1; }
+        npm -v || { echo "npm installation failed"; exit 1; }
 
         # Install yarn globally
         npm install -g yarn
         yarn --version || { echo "Yarn installation failed"; exit 1; }
+
 
         continue
         ;;

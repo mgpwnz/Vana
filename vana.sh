@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.4"
+VERSION="1.0.5"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -72,7 +72,7 @@ while true; do
             # Install yarn globally
             npm install -g yarn
             yarn --version || { echo "Yarn installation failed"; exit 1; }
-
+        echo "DONE"
         break
         ;;
 
@@ -116,24 +116,36 @@ while true; do
 
       "Deploy")
         cd $HOME
+        # Додайте це на початку скрипта
+        export PATH="$HOME/.local/bin:$PATH"
+
+        cd $HOME
         # Клонування репозиторію
         git clone https://github.com/vana-com/vana-dlp-smart-contracts.git
         cd vana-dlp-smart-contracts
+
+        # Перевірка, чи встановлено yarn
+        if ! command -v yarn &> /dev/null; then
+            echo "Yarn is not installed. Installing now..."
+            npm install -g yarn
+        fi
+
         # Встановлення залежностей через Yarn
         yarn install
+
         # Копіювання файлу .env.example до .env
         cp .env.example .env
-        
+
         # Цикл для збору та підтвердження інформації
         while true; do
-          DPK="" OA="" DN="" DTM="" DTS=""
-          check_empty DPK "DEPLOYER_PRIVATE_KEY: "
-          check_empty OA "OWNER_ADDRESS: "
-          check_empty DN "DLP_NAME: "
-          check_empty DTM "DLP_TOKEN_NAME: "
-          check_empty DTS "DLP_TOKEN_SYMBOL: "
-          confirm_input DPK OA DN DTM DTS
-          if [ $? -eq 0 ]; then break; fi
+        DPK="" OA="" DN="" DTM="" DTS=""
+        check_empty DPK "DEPLOYER_PRIVATE_KEY: "
+        check_empty OA "OWNER_ADDRESS: "
+        check_empty DN "DLP_NAME: "
+        check_empty DTM "DLP_TOKEN_NAME: "
+        check_empty DTS "DLP_TOKEN_SYMBOL: "
+        confirm_input DPK OA DN DTM DTS
+        if [ $? -eq 0 ]; then break; fi
         done
 
         # Оновлення файлу .env з введеними даними
@@ -142,11 +154,12 @@ while true; do
         sed -i "s/Custom Data Liquidity Pool/$DN/" .env
         sed -i "s/Custom Data Autonomy Token/$DTM/" .env
         sed -i "s/CUSTOMDAT/$DTS/" .env
-        
+
         # Деплой на мережу satori
         npx hardhat deploy --network satori --tags DLPDeploy
         cd $HOME
-        continue
+
+        break
         ;;
 
       "Pre Validator")

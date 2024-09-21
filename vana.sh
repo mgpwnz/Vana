@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.9"
+VERSION="1.0.10"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -155,7 +155,7 @@ while true; do
         check_empty DN "DLP_NAME: "
         check_empty DTN "DLP_TOKEN_NAME: "
         check_empty DTS "DLP_TOKEN_SYMBOL: "
-        confirm_input DPK OA DN DTM DTS
+        confirm_input DPK OA DN DTN DTS
         if [ $? -eq 0 ]; then break; fi
         done
 
@@ -172,24 +172,7 @@ while true; do
 
         break
         ;;
-      "Verifi")
-        cd $HOME/vana-dlp-smart-contracts
-        # Цикл для збору та підтвердження інформації
-        while true; do
-          DLP="" DLPT="" DTN="" DTS="" MM=""
-          check_empty DLP "DLP_SATORI_CONTRACT: "
-          check_empty DLPT "DLP_TOKEN_SATORI_CONTRACT: "
-          check_empty DTN "DLP_TOKEN_NAME: "
-          check_empty DTS "DLP_TOKEN_SYMBOL: "
-          check_empty MM "Wallet address coldkey: "
-          confirm_input DLP DLPT
-          if [ $? -eq 0 ]; then break; fi
-        done
-        npx hardhat verify --network satori $DLP
-        sleep 5
-        npx hardhat verify --network satori $DLPT "$DTN" $DTS $MM
-        break
-        ;;
+
       "Pre Validator")
         cd $HOME/vana-dlp-chatgpt
         # Цикл для збору та підтвердження інформації

@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.2"
+VERSION="1.0.3"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -79,26 +79,41 @@ while true; do
         ;;
 
       "Install Node")
+        export PATH="$HOME/.local/bin:$PATH"
+
         cd $HOME
         # Clone repository
         git clone https://github.com/vana-com/vana-dlp-chatgpt.git
         cd vana-dlp-chatgpt
         cp .env.example .env
+
+        # Перевірка, чи встановлено poetry
+        if ! command -v poetry &> /dev/null; then
+            echo "Poetry is not installed. Installing now..."
+            curl -sSL https://install.python-poetry.org | python3 -
+            export PATH="$HOME/.local/bin:$PATH" # Додайте ще раз, щоб оновити PATH
+            source ~/.bashrc
+        fi
+
+        # Встановлення залежностей
         poetry install
         pip install vana
-        # generate wallet
+
+        # Генерація гаманця
         vanacli wallet create --wallet.name default --wallet.hotkey default
         sleep 3
-        #export cold
+
+        # Експорт ключів
         vanacli wallet export_private_key --wallet.name default
         sleep 4
-        #export hot
         vanacli wallet export_private_key --wallet.name default --wallet.hotkey default
-        #gen
+
+        # Генерація ключів
         chmod +x keygen.sh
         ./keygen.sh
         cd $HOME
-        continue
+
+        break
         ;;
 
       "Deploy")

@@ -40,6 +40,7 @@ while true; do
         # Pre Install
         sudo apt update && sudo apt upgrade -y
         sudo apt-get install git -y
+        git --version || { echo "git installation failed"; exit 1; }
 
         # Python
         sudo apt install software-properties-common -y
@@ -53,17 +54,18 @@ while true; do
         curl -sSL https://install.python-poetry.org | python3 -
         export PATH="$HOME/.local/bin:$PATH"
         source ~/.bashrc
-        poetry --version
+        poetry --version || { echo "Poetry installation failed"; exit 1; }
 
         # Node.js + npm
         curl -fsSL https://fnm.vercel.app/install | bash
         source ~/.bashrc
         fnm use --install-if-missing 22
-        node -v && npm -v
+        node -v && npm -v || { echo "Node.js or npm installation failed"; exit 1; }
 
         # Install yarn globally
         npm install -g yarn
-        yarn --version
+        yarn --version || { echo "Yarn installation failed"; exit 1; }
+
         continue
         ;;
 

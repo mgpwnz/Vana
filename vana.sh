@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.12"
+VERSION="1.0.13"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -41,7 +41,7 @@ while true; do
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
-       # Pre Install
+        # Pre Install
         sudo apt update && sudo apt upgrade -y
         sudo apt-get install git -y
         git --version || { echo "git installation failed"; exit 1; }
@@ -50,12 +50,17 @@ while true; do
         sudo apt install software-properties-common -y
         sudo add-apt-repository ppa:deadsnakes/ppa -y
         sudo apt update
-        sudo apt install python3.11 -y
+        sudo apt install python3.11 python3-pip python3-venv curl -y
         python3.11 --version || { echo "Python installation failed"; exit 1; }
 
         # Poetry
-        sudo apt install python3-pip python3-venv curl -y
         curl -sSL https://install.python-poetry.org | python3 -
+        if [ $? -ne 0 ]; then
+            echo "Poetry installation via curl failed. Trying pip..."
+            pip install poetry
+        fi
+
+        # Додати Poetry до PATH
         echo "export PATH=\"$HOME/.local/bin:\$PATH\"" >> ~/.bashrc
         source ~/.bashrc
         hash -r
@@ -65,8 +70,7 @@ while true; do
         if ! command -v nvm &> /dev/null; then
             echo "Installing nvm..."
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            source "$HOME/.nvm/nvm.sh"  # Завантажити nvm
         fi
 
         # Install the latest version of Node.js

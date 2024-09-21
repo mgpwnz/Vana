@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.13"
+VERSION="1.0.14"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -220,7 +220,7 @@ EOF
         sleep 5
         
         # Виведення Hotkey адреси валідатора
-        echo "Hotkey ADDRESS: $HOT"
+        read -p "Hotkey ADDRESS : " HOT
         
         # Підтвердження валідатора за допомогою Hotkey адреси
         ./vanacli dlp approve_validator --validator_address=$HOT

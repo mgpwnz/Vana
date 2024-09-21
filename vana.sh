@@ -37,38 +37,62 @@ while true; do
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
+        # Функція для відображення прогресу
+        show_progress() {
+            local -r duration=${1}
+            local -r delay=0.1
+            local -r total=$((${duration} / ${delay}))
+            for ((i=0; i<=total; i++)); do
+                sleep ${delay}
+                printf "\rProgress: ["
+                for ((j=0; j<i*100/total)); j+=2)); do
+                    printf "="
+                done
+                for ((j=i*100/total; j<100; j+=2)); do
+                    printf " "
+                done
+                printf "] %d%%" $((i*100/total))
+            done
+            printf "\n"
+        }
+
         # Pre Install
-        sudo apt update && sudo apt upgrade -y
-        sudo apt-get install git -y
-        git --version || { echo "git installation failed"; exit 1; }
+        {
+            sudo apt update && sudo apt upgrade -y
+            sudo apt-get install git -y
+            git --version || { echo "git installation failed"; exit 1; }
 
-        # Python
-        sudo apt install software-properties-common -y
-        sudo add-apt-repository ppa:deadsnakes/ppa -y
-        sudo apt update
-        sudo apt install python3.11 -y
-        python3.11 --version || { echo "Python installation failed"; exit 1; }
+            # Python
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository ppa:deadsnakes/ppa -y
+            sudo apt update
+            sudo apt install python3.11 -y
+            python3.11 --version || { echo "Python installation failed"; exit 1; }
 
-        # Poetry
-        sudo apt install python3-pip python3-venv curl -y
-        curl -sSL https://install.python-poetry.org | python3 -
-        export PATH="$HOME/.local/bin:$PATH"
-        source ~/.bashrc
-        poetry --version || { echo "Poetry installation failed"; exit 1; }
+            # Poetry
+            sudo apt install python3-pip python3-venv curl -y
+            curl -sSL https://install.python-poetry.org | python3 -
+            export PATH="$HOME/.local/bin:$PATH"
+            source ~/.bashrc
+            poetry --version || { echo "Poetry installation failed"; exit 1; }
 
-        # Node.js + npm
-        curl -fsSL https://fnm.vercel.app/install | bash
-        export PATH="/root/.local/share/fnm:$PATH"
-        eval "$(fnm env)"
+            # Node.js + npm
+            curl -fsSL https://fnm.vercel.app/install | bash
+            export PATH="/root/.local/share/fnm:$PATH"
+            eval "$(fnm env)"
 
-        fnm use --install-if-missing 22
-        node -v || { echo "Node.js installation failed"; exit 1; }
-        npm -v || { echo "npm installation failed"; exit 1; }
+            fnm use --install-if-missing 22
+            node -v || { echo "Node.js installation failed"; exit 1; }
+            npm -v || { echo "npm installation failed"; exit 1; }
 
-        # Install yarn globally
-        npm install -g yarn
-        yarn --version || { echo "Yarn installation failed"; exit 1; }
+            # Install yarn globally
+            npm install -g yarn
+            yarn --version || { echo "Yarn installation failed"; exit 1; }
+        } &> /dev/null &
 
+        # Запускаємо прогрес
+        show_progress 90 # Змініть 30 на приблизний час, за який виконується блок Pre Install
+        wait
 
         continue
         ;;

@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.16"
+VERSION="1.0.17"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -42,56 +42,62 @@ while true; do
     case $opt in
       "Pre Install")
        # Pre Install
-        sudo apt update && sudo apt upgrade -y
-        sudo apt-get install git -y
-        git --version || { echo "Git installation failed"; exit 1; }
+            sudo apt update && sudo apt upgrade -y
+            sudo apt-get install git -y
+            git --version || { echo "Git installation failed"; exit 1; }
 
-        # Python
-        sudo apt install software-properties-common -y
-        sudo add-apt-repository ppa:deadsnakes/ppa -y
-        sudo apt update
-        sudo apt install python3.11 python3-pip python3-venv curl -y
-        python3.11 --version || { echo "Python installation failed"; exit 1; }
+            # Python
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository ppa:deadsnakes/ppa -y
+            sudo apt update
+            sudo apt install python3.11 python3-pip python3-venv curl -y
+            python3.11 --version || { echo "Python installation failed"; exit 1; }
 
-        # Poetry
-        if ! command -v poetry &> /dev/null; then
-            curl -sSL https://install.python-poetry.org | python3 -
-            if [ $? -ne 0 ]; then
-                echo "Poetry installation via curl failed. Trying pip..."
-                pip install --user poetry
+            # Poetry
+            if ! command -v poetry &> /dev/null; then
+                echo "Installing Poetry..."
+                sudo apt install python3-poetry -y || {
+                    echo "Poetry installation via apt failed. Trying curl..."
+                    curl -sSL https://install.python-poetry.org | python3 - || {
+                        echo "Poetry installation via curl failed."
+                        exit 1
+                    }
+                }
+            else
+                echo "Poetry is already installed."
             fi
-        else
-            echo "Poetry is already installed."
-        fi
 
-        # Додати Poetry до PATH
-        echo "export PATH=\"$HOME/.local/bin:\$PATH\"" >> ~/.bashrc
-        source ~/.bashrc
-        hash -r
+            # Додати Poetry до PATH, якщо ще не додано
+            if ! grep -q "$HOME/.local/bin" ~/.bashrc; then
+                echo "export PATH=\"$HOME/.local/bin:\$PATH\"" >> ~/.bashrc
+                source ~/.bashrc
+                hash -r
+            fi
 
-        # Перевірка версії Poetry
-        poetry --version || { echo "Poetry installation failed"; exit 1; }
+            # Перевірка версії Poetry
+            poetry --version || { echo "Poetry installation failed"; exit 1; }
 
-        # Install Node.js using nvm
-        if ! command -v nvm &> /dev/null; then
-            echo "Installing nvm..."
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-            source "$HOME/.nvm/nvm.sh"  # Завантажити nvm
-        fi
+            # Install Node.js using nvm
+            if ! command -v nvm &> /dev/null; then
+                echo "Installing nvm..."
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+                source "$HOME/.nvm/nvm.sh"  # Завантажити nvm
+            fi
 
-        # Install the latest version of Node.js
-        nvm install node
-        nvm use node
+            # Install the latest version of Node.js
+            nvm install node
+            nvm use node
 
-        # Verify installation
-        node -v || { echo "Node.js installation failed"; exit 1; }
-        npm -v || { echo "npm installation failed"; exit 1; }
+            # Verify installation
+            node -v || { echo "Node.js installation failed"; exit 1; }
+            npm -v || { echo "npm installation failed"; exit 1; }
 
-        # Install yarn globally
-        npm install -g yarn
-        yarn --version || { echo "Yarn installation failed"; exit 1; }
+            # Install yarn globally
+            npm install -g yarn
+            yarn --version || { echo "Yarn installation failed"; exit 1; }
 
-        echo "DONE"
+            echo "DONE"
+
 
 
         break

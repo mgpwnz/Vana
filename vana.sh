@@ -33,12 +33,12 @@ function confirm_input {
 # Функція для відображення прогресу
 show_progress() {
     local -r duration=${1}
-    local -r delay=0.1
+    local -r delay=1  # Змінив на цілочисельне значення
     local -r total=$((${duration} / ${delay}))
     for ((i=0; i<=total; i++)); do
         sleep ${delay}
         printf "\rProgress: ["
-        for ((j=0; j<i*100/total; j+=2)); do  
+        for ((j=0; j<i*100/total; j+=2)); do
             printf "="
         done
         for ((j=i*100/total; j<100; j+=2)); do

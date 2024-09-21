@@ -30,6 +30,25 @@ function confirm_input {
   return 0 
 }
 
+# Функція для відображення прогресу
+show_progress() {
+    local -r duration=${1}
+    local -r delay=0.1
+    local -r total=$((${duration} / ${delay}))
+    for ((i=0; i<=total; i++)); do
+        sleep ${delay}
+        printf "\rProgress: ["
+        for ((j=0; j<i*100/total; j+=2)); do  
+            printf "="
+        done
+        for ((j=i*100/total; j<100; j+=2)); do
+            printf " "
+        done
+        printf "] %d%%" $((i*100/total))
+    done
+    printf "\n"
+}
+
 while true; do
   # Menu
   PS3='Select an action: '
@@ -37,25 +56,6 @@ while true; do
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
-        # Функція для відображення прогресу
-        show_progress() {
-            local -r duration=${1}
-            local -r delay=0.1
-            local -r total=$((${duration} / ${delay}))
-            for ((i=0; i<=total; i++)); do
-                sleep ${delay}
-                printf "\rProgress: ["
-                for ((j=0; j<i*100/total)); j+=2)); do
-                    printf "="
-                done
-                for ((j=i*100/total; j<100; j+=2)); do
-                    printf " "
-                done
-                printf "] %d%%" $((i*100/total))
-            done
-            printf "\n"
-        }
-
         # Pre Install
         {
             sudo apt update && sudo apt upgrade -y
@@ -90,8 +90,7 @@ while true; do
             yarn --version || { echo "Yarn installation failed"; exit 1; }
         } &> /dev/null &
 
-        # Запускаємо прогрес
-        show_progress 90 # Змініть 30 на приблизний час, за який виконується блок Pre Install
+        show_progress 90
         wait
 
         break

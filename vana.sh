@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.6"
+VERSION="1.0.7"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -42,43 +42,47 @@ while true; do
     case $opt in
       "Pre Install")
         # Pre Install
-            sudo apt update && sudo apt upgrade -y
-            sudo apt-get install git -y
-            git --version || { echo "git installation failed"; exit 1; }
+        sudo apt update && sudo apt upgrade -y
+        sudo apt-get install git -y
+        git --version || { echo "git installation failed"; exit 1; }
 
-            # Python
-            sudo apt install software-properties-common -y
-            sudo add-apt-repository ppa:deadsnakes/ppa -y
-            sudo apt update
-            sudo apt install python3.11 -y
-            python3.11 --version || { echo "Python installation failed"; exit 1; }
+        # Python
+        sudo apt install software-properties-common -y
+        sudo add-apt-repository ppa:deadsnakes/ppa -y
+        sudo apt update
+        sudo apt install python3.11 -y
+        python3.11 --version || { echo "Python installation failed"; exit 1; }
 
-            # Poetry
-            sudo apt install python3-pip python3-venv curl -y
-            curl -sSL https://install.python-poetry.org | python3 -
-            export PATH="$HOME/.local/bin:$PATH"
-            source ~/.bashrc
-            poetry --version || { echo "Poetry installation failed"; exit 1; }
+        # Poetry
+        sudo apt install python3-pip python3-venv curl -y
+        curl -sSL https://install.python-poetry.org | python3 -
+        export PATH="$HOME/.local/bin:$PATH"
+        source ~/.bashrc
+        poetry --version || { echo "Poetry installation failed"; exit 1; }
 
-            # Install Node.js using nvm
-            if ! command -v nvm &> /dev/null; then
-                echo "Installing nvm..."
-                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-                export NVM_DIR="$HOME/.nvm"
-                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-            fi
+        # Install Node.js using nvm
+        if ! command -v nvm &> /dev/null; then
+            echo "Installing nvm..."
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+        fi
 
-            # Install the latest version of Node.js
-            nvm install node
-            nvm use node
+        # Install the latest version of Node.js
+        nvm install node
+        nvm use node
 
-            # Verify installation
-            node -v || { echo "Node.js installation failed"; exit 1; }
-            npm -v || { echo "npm installation failed"; exit 1; }
+        # Verify installation
+        node -v || { echo "Node.js installation failed"; exit 1; }
+        npm -v || { echo "npm installation failed"; exit 1; }
 
-            # Install yarn globally
-            npm install -g yarn
-            yarn --version || { echo "Yarn installation failed"; exit 1; }
+        # Install npm via apt (optional)
+        sudo apt install npm -y
+
+        # Install yarn globally
+        npm install -g yarn
+        yarn --version || { echo "Yarn installation failed"; exit 1; }
+
         echo "DONE"
         break
         ;;

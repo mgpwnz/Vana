@@ -1,5 +1,7 @@
 #!/bin/bash
-
+VERSION="1.0.1"
+# Виведення версії при запуску
+echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
 function check_empty {
   local varname=$1

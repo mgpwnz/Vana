@@ -94,7 +94,7 @@ while true; do
         show_progress 90 # Змініть 30 на приблизний час, за який виконується блок Pre Install
         wait
 
-        continue
+        break
         ;;
 
       "Install Node")

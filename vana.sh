@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.11"
+VERSION="1.0.12"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -41,7 +41,7 @@ while true; do
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
-        # Pre Install
+       # Pre Install
         sudo apt update && sudo apt upgrade -y
         sudo apt-get install git -y
         git --version || { echo "git installation failed"; exit 1; }
@@ -56,8 +56,9 @@ while true; do
         # Poetry
         sudo apt install python3-pip python3-venv curl -y
         curl -sSL https://install.python-poetry.org | python3 -
-        export PATH="$HOME/.local/bin:$PATH"
+        echo "export PATH=\"$HOME/.local/bin:\$PATH\"" >> ~/.bashrc
         source ~/.bashrc
+        hash -r
         poetry --version || { echo "Poetry installation failed"; exit 1; }
 
         # Install Node.js using nvm
@@ -81,6 +82,7 @@ while true; do
         yarn --version || { echo "Yarn installation failed"; exit 1; }
 
         echo "DONE"
+
         break
         ;;
 
@@ -204,7 +206,7 @@ DLP_TOKEN_SATORI_CONTRACT="$DLPT"
 PRIVATE_FILE_ENCRYPTION_PUBLIC_KEY_BASE64="$KEY"
 EOF
         cd $HOME
-        continue
+        break
         ;;
 
       "Stake Validator")
@@ -251,7 +253,7 @@ EOF
         sudo systemctl start vana.service
         # Перевірка статусу сервісу
         sudo systemctl status vana.service
-        continue
+        break
         ;;
 
       "Logs")

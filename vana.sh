@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.10"
+VERSION="1.0.11"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення

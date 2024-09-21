@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.7"
+VERSION="1.0.8"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -37,7 +37,7 @@ function confirm_input {
 while true; do
   # Menu
   PS3='Select an action: '
-  options=("Pre Install" "Install Node" "Deploy" "Pre Validator" "Stake Validator" "Logs" "Uninstall" "Exit")
+  options=("Pre Install" "Install Node" "Deploy" "Verifi" "Pre Validator" "Stake Validator" "Logs" "Uninstall" "Exit")
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
@@ -149,11 +149,11 @@ while true; do
 
         # Цикл для збору та підтвердження інформації
         while true; do
-        DPK="" OA="" DN="" DTM="" DTS=""
+        DPK="" OA="" DN="" DTN="" DTS=""
         check_empty DPK "DEPLOYER_PRIVATE_KEY: "
         check_empty OA "OWNER_ADDRESS: "
         check_empty DN "DLP_NAME: "
-        check_empty DTM "DLP_TOKEN_NAME: "
+        check_empty DTN "DLP_TOKEN_NAME: "
         check_empty DTS "DLP_TOKEN_SYMBOL: "
         confirm_input DPK OA DN DTM DTS
         if [ $? -eq 0 ]; then break; fi
@@ -163,7 +163,7 @@ while true; do
         sed -i "s/0x71000000000000000000000etc/$DPK/" .env
         sed -i "s/0x00etc/$OA/" .env
         sed -i "s/Custom Data Liquidity Pool/$DN/" .env
-        sed -i "s/Custom Data Autonomy Token/$DTM/" .env
+        sed -i "s/Custom Data Autonomy Token/$DTN/" .env
         sed -i "s/CUSTOMDAT/$DTS/" .env
 
         # Деплой на мережу satori
@@ -172,7 +172,24 @@ while true; do
 
         break
         ;;
-
+      "Verifi")
+        cd $HOME/vana-dlp-smart-contracts
+        # Цикл для збору та підтвердження інформації
+        while true; do
+          DLP="" DLPT="" DTN="" DTS="" MM=""
+          check_empty DLP "DLP_SATORI_CONTRACT: "
+          check_empty DLPT "DLP_TOKEN_SATORI_CONTRACT: "
+          check_empty DTN "DLP_TOKEN_NAME: "
+          check_empty DTS "DLP_TOKEN_SYMBOL: "
+          check_empty MM "Wallet address coldkey: "
+          confirm_input DLP DLPT
+          if [ $? -eq 0 ]; then break; fi
+        done
+        npx hardhat verify --network satori $DLP
+        sleep 5
+        npx hardhat verify --network satori $DLPT "$DTN" $DTS $MM
+        break
+        ;;
       "Pre Validator")
         cd $HOME/vana-dlp-chatgpt
         # Цикл для збору та підтвердження інформації

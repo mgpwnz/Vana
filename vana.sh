@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0.14"
+VERSION="1.0.15"
 # Виведення версії при запуску
 echo "Script version: $VERSION"
 # Функція для перевірки на порожні значення
@@ -262,7 +262,7 @@ EOF
 
       "Logs")
         sudo journalctl -u vana.service -f
-        continue
+        break
         ;;
 
       "Uninstall")
@@ -292,7 +292,7 @@ EOF
             echo "Canceled"
             ;;
         esac
-        continue
+        break
         ;;
 
       "Exit")

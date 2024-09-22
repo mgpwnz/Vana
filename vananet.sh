@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.1.0"
+VERSION="1.1.1"
 # Виведення версії при запуску
 echo -e "\e[1;32mScript version: $VERSION\e[0m"  # Зелений текст
 # Функція для перевірки на порожні значення
@@ -39,19 +39,23 @@ while true; do
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
-        echo -e "\e[1;34mStarting Pre Install...\e[0m"  # Синій текст
+                echo -e "\e[1;34mStarting Pre Install...\e[0m"  # Синій текст
+
+        # Оновлення пакетів
         sudo apt update && sudo apt upgrade -y
+
+        # Встановлення git
         sudo apt-get install git -y
         git --version || { echo -e "\e[1;31mGit installation failed\e[0m"; exit 1; }
 
-        # Python
+        # Встановлення Python
         sudo apt install software-properties-common -y
         sudo add-apt-repository ppa:deadsnakes/ppa -y
         sudo apt update
         sudo apt install python3.11 python3-pip python3-venv curl -y
         python3.11 --version || { echo -e "\e[1;31mPython installation failed\e[0m"; exit 1; }
 
-        # Poetry
+        # Встановлення Poetry
         if ! command -v poetry &> /dev/null; then
             echo -e "\e[1;32mInstalling Poetry...\e[0m"  # Зелений текст
             sudo apt install python3-poetry -y || {
@@ -75,26 +79,28 @@ while true; do
         # Перевірка версії Poetry
         poetry --version || { echo -e "\e[1;31mPoetry installation failed\e[0m"; exit 1; }
 
-        # Install Node.js using nvm
+        # Встановлення Node.js за допомогою nvm
         if ! command -v nvm &> /dev/null; then
             echo -e "\e[1;32mInstalling nvm...\e[0m"
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+            source ~/.bashrc
             source "$HOME/.nvm/nvm.sh"  # Завантажити nvm
         fi
 
-        # Install the latest version of Node.js
-        nvm install node
-        nvm use node
+        # Встановити останню версію Node.js
+        nvm install 18
+        nvm use 18
 
-        # Verify installation
+        # Перевірка встановлення Node.js
         node -v || { echo -e "\e[1;31mNode.js installation failed\e[0m"; exit 1; }
         npm -v || { echo -e "\e[1;31mnpm installation failed\e[0m"; exit 1; }
 
-        # Install yarn globally
+        # Встановлення Yarn глобально
         npm install -g yarn
         yarn --version || { echo -e "\e[1;31mYarn installation failed\e[0m"; exit 1; }
 
-        echo -e "\e[1;32mPre Install completed.\e[0m"
+        echo -e "\e[1;32mPre Install completed.\e[0m"  # Зелений текст
+
         break
         ;;
         

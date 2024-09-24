@@ -35,7 +35,7 @@ function confirm_input {
 while true; do
   # Menu
   PS3='Select an action: '
-  options=("Pre Install" "Install Node" "Deploy" "Pre Validator" "Stake Validator" "Logs" "Uninstall" "Exit")
+  options=("Pre Install" "Install Node" "RUN Validator" "Logs" "Uninstall" "Exit")
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")

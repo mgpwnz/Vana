@@ -84,19 +84,23 @@ while true; do
         done
         sed -i "s/0x0000000000000000000000000000000000000000/$WA/" .env
         sed -i "s/0000000000000000000000000000000000000000000000000000000000000000/$PK/" .env
-        sed -i "s/USE_VALIDATOR=false/USE_VALIDATOR=true/" .env
         cd $HOME
         echo -e "\e[1;32mNode Installation completed.\e[0m"
         break
         ;;
-      "Generate validator keys")
+      "RUN non-Validator")
+        echo -e "\e[1;34mStarting Validator...\e[0m"  # Синій текст
+        docker compose -f $HOME/vana/docker-compose.yml --profile init --profile validator up -d
+        break
+        ;;       
+      "Generate Validator keys")
         echo -e "\e[1;34mStarting Generate validator keys...\e[0m"  # Синій текст
         cd $HOME/vana
+        sed -i "s/USE_VALIDATOR=false/USE_VALIDATOR=true/" .env
         docker compose --profile init --profile manual run --rm validator-keygen
         cd $HOME
         break
         ;;
-
       "RUN Validator")
         echo -e "\e[1;34mStarting Validator...\e[0m"  # Синій текст
         docker compose -f $HOME/vana/docker-compose.yml --profile init --profile validator up -d
@@ -115,7 +119,6 @@ while true; do
         docker compose -f $HOME/vana/docker-compose.yml --profile=init --profile=node logs -f validator
         break
         ;;
-
       "Uninstall")
         echo -e "\e[1;34mUninstallation process started...\e[0m"  # Синій текст
         if [ ! -d "$HOME/vana" ]; then

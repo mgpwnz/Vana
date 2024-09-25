@@ -89,6 +89,9 @@ while true; do
         break
         ;;
       "RUN non-Validator")
+        cd $HOME/vana
+        sed -i "s/GETH_SYNCMODE=full/GETH_SYNCMODE=snap/" .env
+        cd $HOME
         echo -e "\e[1;34mStarting Validator...\e[0m"  # Синій текст
         docker compose -f $HOME/vana/docker-compose.yml --profile init --profile validator up -d
         break

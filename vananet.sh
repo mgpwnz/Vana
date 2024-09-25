@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.0"
+VERSION="1.1"
 # Виведення версії при запуску
 echo -e "\e[1;32mScript version: $VERSION\e[0m"  # Зелений текст
 # Функція для перевірки на порожні значення
@@ -35,7 +35,7 @@ function confirm_input {
 while true; do
   # Menu
   PS3='Select an action: '
-  options=("Pre Install" "Install Node" "RUN Validator" "Logs" "Uninstall" "Exit")
+  options=("Pre Install" "Install Node" "Generate validator keys" "RUN Validator" "Logs" "Uninstall" "Exit")
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
@@ -89,20 +89,30 @@ while true; do
         echo -e "\e[1;32mNode Installation completed.\e[0m"
         break
         ;;
-      
-      "RUN Validator")
-        echo -e "\e[1;34mStarting Validator...\e[0m"  # Синій текст
-        docker compose -f $HOME/vana/docker-compose.yml --profile manual run --rm validator-keygen
-        echo -e "\e[1;34mGenerate validator keys DONE!\e[0m"  # Синій текст
-        docker compose -f $HOME/vana/docker-compose.yml --profile init --profile manual run --rm submit-deposits
-        echo -e "\e[1;34mSSubmit deposits for your validator.\e[0m"  # Синій текст
-        docker compose -f $HOME/vana/docker-compose.yml --profile init --profile validator up -d
+      "Generate validator keys")
+        echo -e "\e[1;34mStarting Generate validator keys...\e[0m"  # Синій текст
+        cd $HOME/vana
+        docker compose --profile init --profile manual run --rm validator-keygen
+        cd $HOME
         break
         ;;
 
+      "RUN Validator")
+        echo -e "\e[1;34mStarting Validator...\e[0m"  # Синій текст
+        docker compose -f $HOME/vana/docker-compose.yml --profile init --profile validator up -d
+        break
+        ;;
+      "Submit Deposits")
+        echo -e "\e[1;34mSubmit Deposits...\e[0m"  # Синій текст
+        cd $HOME/vana
+        docker compose --profile init --profile manual run --rm submit-deposits
+        cd $HOME
+        break
+        break
+        ;;      
       "Logs")
         echo -e "\e[1;34mDisplaying Logs...\e[0m"  # Синій текст
-        docker compose -f $HOME/vana/docker-compose.yml logs -f
+        docker compose -f $HOME/vana/docker-compose.yml --profile=init --profile=node logs -f validator
         break
         ;;
 

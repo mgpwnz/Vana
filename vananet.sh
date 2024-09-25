@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.1"
+VERSION="1.2"
 # Виведення версії при запуску
 echo -e "\e[1;32mScript version: $VERSION\e[0m"  # Зелений текст
 # Функція для перевірки на порожні значення
@@ -35,7 +35,7 @@ function confirm_input {
 while true; do
   # Menu
   PS3='Select an action: '
-  options=("Pre Install" "Install Node" "Generate validator keys" "RUN Validator" "Logs" "Uninstall" "Exit")
+  options=("Pre Install" "Install Node" "RUN non-Validator" "Generate validator keys" "RUN Validator" "Submit Deposits" "Validator Logs" "Uninstall" "Exit")
   select opt in "${options[@]}"; do
     case $opt in
       "Pre Install")
@@ -117,7 +117,7 @@ while true; do
         break
         break
         ;;      
-      "Logs")
+      "Validator Logs")
         echo -e "\e[1;34mDisplaying Logs...\e[0m"  # Синій текст
         docker compose -f $HOME/vana/docker-compose.yml --profile=init --profile=node logs -f validator
         break
